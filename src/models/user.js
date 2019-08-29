@@ -42,6 +42,9 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    avatar: {
+        type: Buffer
+    },
     tokens: [{
         token: {
             type: String,
@@ -58,7 +61,7 @@ userSchema.virtual('tasks', {
     foreignField: 'owner'
 })
 
-userSchema.methods.toJSON = function () {
+userSchema.methods.toJSON = function() {
     const user = this
     const userObject = user.toObject()
 
@@ -68,7 +71,7 @@ userSchema.methods.toJSON = function () {
     return userObject
 }
 
-userSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function() {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, 'thisistoken')
 
@@ -102,7 +105,7 @@ userSchema.pre('save', async function(next) {
 
 userSchema.pre('remove', async function(next) {
     const user = this
-    
+
     await Task.deleteMany({ owner: user._id })
 
     next()
